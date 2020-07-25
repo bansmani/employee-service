@@ -7,14 +7,10 @@ import com.sg.employeeservice.domain.Gender
 import com.sg.employeeservice.service.EmployeeService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.BDDMockito
-import org.mockito.BDDMockito.*
-import org.mockito.Mock
+import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
-import org.mockito.Spy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -84,6 +80,6 @@ internal class EmployeeControllerTest(
     }
 
     //Note: mokito support for kotlin
-    private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
+    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 
 }
