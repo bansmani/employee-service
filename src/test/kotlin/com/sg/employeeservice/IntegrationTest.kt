@@ -12,11 +12,13 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
+import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -33,18 +35,33 @@ class IntegrationTest(
     @MockBean
     lateinit var employeeService: EmployeeService
 
+    //Note: can not use Before all due to companion objects limitation
     @BeforeEach
     fun `before each`() {
         given(employeeService.findEmployee(ArgumentMatchers.anyString())).willReturn(
-                Employee("EMP001", "Manish", "Bansal", Gender.MALE,
-                        LocalDate.of(1990, 1, 1), "IT"))
+                TestObjectFactory.getRandomEployee())
     }
 
     @Test
-    fun `employee endpoint should exists`() {
+    fun `endpoint to get all employee should exists`() {
         val response = restTemplate.getForEntity(URI("/employee"), Any::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     }
+
+    @Test
+    fun `endpoint to get one employee should exists`() {
+        val response = restTemplate.getForEntity(URI("/employee/fakeid"), Any::class.java)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
+    fun `endpoint to save employee should exists which takes one employee object`() {
+        val response = restTemplate.postForEntity(URI("/employee"),
+                TestObjectFactory.getRandomEployee(),
+                String::class.java)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
+    }
+
 
     @Test
     fun `employee endpoint should return List of Employee DTO objects`() {

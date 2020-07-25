@@ -1,30 +1,34 @@
 package com.sg.employeeservice.controller
 
-import com.sg.employeeservice.domain.Gender
+import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.dto.EmployeeDTO
 import com.sg.employeeservice.service.EmployeeService
-import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 
+@Suppress("unused")
 @RestController
 class EmployeeController(
-        @Autowired private val employeeService: EmployeeService
+        @Autowired  val employeeService: EmployeeService
 ) {
 
 
     @GetMapping("/employee")
     fun getAllEmployee(): List<EmployeeDTO> {
-        return employeeService.findAllEmployee().map { it -> it.toDTO() }
-//        return listOf(EmployeeDTO("", "", "", Gender.MALE, LocalDate.now(), ""))
+        return employeeService.findAllEmployee().map { it.toDTO() }
     }
 
     @GetMapping("/employee/{empid}")
     fun getEmployee(@PathVariable("empid") empId: String): EmployeeDTO? {
          return employeeService.findEmployee(empId)?.toDTO()
     }
+
+    @PostMapping("/employee")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveEmployee(@RequestBody employee: Employee){
+        employeeService.saveEmployee(employee)
+    }
+
 
 }
