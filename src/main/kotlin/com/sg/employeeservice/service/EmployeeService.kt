@@ -5,9 +5,13 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class EmployeeService  {
+class EmployeeService {
     fun findEmployee(employeeId: String): Employee? {
         return null
+    }
+
+    fun findAllEmployee() :  List<Employee> {
+        return emptyList()
     }
 
 }

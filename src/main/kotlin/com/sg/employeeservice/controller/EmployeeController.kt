@@ -15,9 +15,11 @@ class EmployeeController(
         @Autowired private val employeeService: EmployeeService
 ) {
 
+
     @GetMapping("/employee")
     fun getAllEmployee(): List<EmployeeDTO> {
-        return listOf(EmployeeDTO("", "", "", Gender.MALE, LocalDate.now(), ""))
+        return employeeService.findAllEmployee().map { it -> it.toDTO() }
+//        return listOf(EmployeeDTO("", "", "", Gender.MALE, LocalDate.now(), ""))
     }
 
     @GetMapping("/employee/{empid}")

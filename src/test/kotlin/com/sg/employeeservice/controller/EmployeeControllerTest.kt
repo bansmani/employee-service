@@ -44,6 +44,21 @@ internal class EmployeeControllerTest(
     }
 
 
+    @Test
+    fun `getAllEmployee should return list of employees DTO`(){
+        given(employeeService.findAllEmployee()).willReturn(
+                listOf(Employee("EMP001", "Manish", "Bansal",Gender.MALE,
+                        LocalDate.of(1990,1,1),"IT")))
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$[0].empId").value("EMP001"))
+                .andExpect(jsonPath("$[0].firstName").value("Manish"))
+                .andExpect(jsonPath("$[0].lastName").value("Bansal"))
+                .andExpect(jsonPath("$[0].gender").value("MALE"))
+                .andExpect(jsonPath("$[0].department").value("IT"))
+    }
+
 
 
 }
