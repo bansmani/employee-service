@@ -10,6 +10,4 @@ data class EmployeeDTO(val empId: String,
                        val lastName: String,
                        val gender: Gender,
                        val dob: LocalDate,
-                       val department: String){
-
-}
+                       val department: String)
