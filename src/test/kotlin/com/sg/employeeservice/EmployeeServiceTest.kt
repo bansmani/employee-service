@@ -50,27 +50,6 @@ class EmployeeServiceTest {
         Mockito.verify(employeeRepository, Mockito.times(1)).save(any(Employee::class.java))
     }
 
-//    @Test
-//    fun `employees should be sorted asending default to first name`() {
-//        Mockito.`when`(employeeRepository.save(any(Employee::class.java))).thenCallRealMethod()
-//        Mockito.`when`(employeeRepository.findAll(PageRequest.of(1,100))).thenCallRealMethod()
-//
-//        val emp1 = TestObjectFactory.getRandomEployee("EMP001", "PQR")
-//        employeeService.saveEmployee(emp1)
-//        val emp4 = TestObjectFactory.getRandomEployee("EMP004", "MNO")
-//        employeeService.saveEmployee(emp4)
-//
-//        val emp2 = TestObjectFactory.getRandomEployee("EMP002", "XYZ")
-//        employeeService.saveEmployee(emp2)
-//
-//        val emp3 = TestObjectFactory.getRandomEployee("EMP003", "ABC")
-//        employeeService.saveEmployee(emp3)
-//
-//
-//        println(employeeService.findAllEmployee())
-//
-////        assertThat().isTrue()
-////        assertThat(response.body?.totalElements).isEqualTo(5)
-//    }
+
 
 }

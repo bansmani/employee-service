@@ -100,6 +100,30 @@ class RestLayerIntegrationTest(
         restTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
         return randomEployee.empId
     }
+
+
+    @Test
+    fun `employees should be sorted asending default to first name`() {
+
+        val emp1 = TestObjectFactory.getRandomEployee("EMP001", "PQR")
+        employeeRepository.save(emp1)
+        val emp4 = TestObjectFactory.getRandomEployee("EMP004", "MNO")
+        employeeRepository.save(emp4)
+        val emp2 = TestObjectFactory.getRandomEployee("EMP002", "XYZ")
+        employeeRepository.save(emp2)
+        val emp3 = TestObjectFactory.getRandomEployee("EMP003", "ABC")
+        employeeRepository.save(emp3)
+
+
+        val response = restTemplate.exchange(URI("/employee"), HttpMethod.GET,
+                null, object : ParameterizedTypeReference<RestResponsePage<EmployeeDTO?>?>() {})
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body?.pageable?.isPaged).isTrue()
+        assertThat(response.body?.totalElements).isEqualTo(4)
+        assertThat(response.body!!.content.map { it!!.firstName }.toString()).isEqualTo("[ABC, MNO, PQR, XYZ]")
+
+    }
 }
 
 

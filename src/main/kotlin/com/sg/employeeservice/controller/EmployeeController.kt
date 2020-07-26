@@ -5,6 +5,7 @@ import com.sg.employeeservice.dto.EmployeeDTO
 import com.sg.employeeservice.service.EmployeeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -17,8 +18,10 @@ class EmployeeController(
 
     @GetMapping("/employee")
     fun getAllEmployee(@RequestParam(defaultValue = "0") page: Int = 0,
-                       @RequestParam(defaultValue = "100") size: Int = 100): Page<EmployeeDTO> {
-        return employeeService.findAllEmployee(page, size).map { it.toDTO() }
+                       @RequestParam(defaultValue = "100") size: Int = 100,
+                       @RequestParam(defaultValue = "firstName") sortBy: String = "firstName",
+                       @RequestParam(defaultValue = "ASC") sortDirection: Sort.Direction = Sort.Direction.ASC): Page<EmployeeDTO> {
+        return employeeService.findAllEmployee(page, size, sortBy, sortDirection).map { it.toDTO() }
     }
 
     @GetMapping("/employee/{empid}")

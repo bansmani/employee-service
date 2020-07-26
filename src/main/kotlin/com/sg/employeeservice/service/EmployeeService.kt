@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 
@@ -17,8 +18,11 @@ class EmployeeService(
         return employeeRepository.findById(employeeId).orElse(null)
     }
 
-    fun findAllEmployee(page: Int = 0, size: Int = 100): Page<Employee> {
-        val pageRequest: Pageable = PageRequest.of(page, size)
+    fun findAllEmployee(page: Int = 0,
+                        size: Int = 100,
+                        sortBy: String = "firstName",
+                        sortDirection: Sort.Direction = Sort.Direction.ASC): Page<Employee> {
+        val pageRequest: Pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy))
         return employeeRepository.findAll(pageRequest)
     }
 

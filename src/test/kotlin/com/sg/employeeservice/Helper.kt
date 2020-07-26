@@ -32,4 +32,7 @@ class RestResponsePage<T> : PageImpl<T> {
     constructor(content: List<T>) : super(content)
 
     constructor() : super(ArrayList<T>())
+
+
+
 }
