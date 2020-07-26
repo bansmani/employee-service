@@ -16,7 +16,7 @@ class EmployeeService(
     }
 
     fun findAllEmployee(): List<Employee> {
-        return emptyList()
+        return employeeRepository.findAll().toList()
     }
 
     fun saveEmployee(employee: Employee) {

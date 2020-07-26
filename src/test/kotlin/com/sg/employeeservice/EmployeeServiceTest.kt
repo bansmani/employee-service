@@ -27,4 +27,16 @@ class EmployeeServiceTest {
         assertThat(employee?.empId).isEqualTo("EMP001")
     }
 
+
+    @Test
+    fun `findAllEmployee returns list of employee`() {
+        given(employeeRepository.findAll())
+                .willReturn(listOf(TestObjectFactory.getRandomEployee("EMP001")))
+
+        val employeeList = employeeService.findAllEmployee()
+        assertThat(employeeList[0].empId).isEqualTo("EMP001")
+    }
+
+
+
 }
