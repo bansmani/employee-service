@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
 
 
 @DataJpaTest
@@ -39,5 +40,17 @@ class RepositoryIntegrationTest {
         assertThat(employee.get().empId).isEqualTo(employees[3].empId)
     }
 
+    @Test
+    fun `employee list should fetch only for given page size from database`() {
+
+        val employees = TestObjectFactory.getRandomEployees(10)
+        employeeRepository.saveAll(employees)
+        val only2Employee = employeeRepository.findAll(PageRequest.of(0,2))
+        assertThat(only2Employee.numberOfElements).isEqualTo(2)
+        val only3Employee = employeeRepository.findAll(PageRequest.of(1,3))
+        assertThat(only3Employee.numberOfElements).isEqualTo(3)
+        assertThat(only3Employee.totalElements).isEqualTo(10)
+
+    }
 
 }
