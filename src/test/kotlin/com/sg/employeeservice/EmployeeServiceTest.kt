@@ -10,6 +10,8 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import java.util.*
 
 
@@ -32,11 +34,11 @@ class EmployeeServiceTest {
 
     @Test
     fun `findAllEmployee returns list of employee`() {
-        given(employeeRepository.findAll())
-                .willReturn(listOf(TestObjectFactory.getRandomEployee("EMP001")))
+        given(employeeRepository.findAll(PageRequest.of(0, 100)))
+                .willReturn(PageImpl(listOf(TestObjectFactory.getRandomEployee("EMP001"))))
 
         val employeeList = employeeService.findAllEmployee()
-        assertThat(employeeList[0].empId).isEqualTo("EMP001")
+        assertThat(employeeList.first().empId).isEqualTo("EMP001")
     }
 
 

@@ -14,11 +14,12 @@ import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
@@ -56,25 +57,25 @@ internal class EmployeeControllerTest(
     @Test
     fun `getAllEmployee should return list of employees DTO`() {
         given(employeeService.findAllEmployee()).willReturn(
-                listOf(Employee("EMP001", "Manish", "Bansal", Gender.MALE,
+               PageImpl( listOf(Employee("EMP001", "Manish", "Bansal", Gender.MALE,
                         LocalDate.of(1990, 1, 1), "IT"),
                         Employee("EMP002", "John", "Rose", Gender.OTHERS,
-                                LocalDate.of(1990, 1, 1), "HRD")))
+                                LocalDate.of(1990, 1, 1), "HRD"))))
 
         mockMvc.perform(get("/employee"))
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$[0].empId").value("EMP001"))
-                .andExpect(jsonPath("$[1].empId").value("EMP002"))
-                .andExpect(jsonPath("$[0].firstName").value("Manish"))
-                .andExpect(jsonPath("$[0].lastName").value("Bansal"))
-                .andExpect(jsonPath("$[0].gender").value("MALE"))
-                .andExpect(jsonPath("$[0].department").value("IT"))
+                .andExpect(jsonPath("$.content[0].empId").value("EMP001"))
+                .andExpect(jsonPath("$.content[1].empId").value("EMP002"))
+                .andExpect(jsonPath("$.content[0].firstName").value("Manish"))
+                .andExpect(jsonPath("$.content[0].lastName").value("Bansal"))
+                .andExpect(jsonPath("$.content[0].gender").value("MALE"))
+                .andExpect(jsonPath("$.content[0].department").value("IT"))
     }
 
 
     @Test
     fun `save employee should take employee object and call service to save employee`() {
-        mockMvc.perform(post("/employee").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/employee").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestObjectFactory.getRandomEployee())))
         verify(employeeService, Mockito.times(1)).saveEmployee(any(Employee::class.java))
     }

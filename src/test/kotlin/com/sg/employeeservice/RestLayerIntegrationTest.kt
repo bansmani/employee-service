@@ -1,5 +1,6 @@
 package com.sg.employeeservice
 
+import com.jayway.jsonpath.JsonPath
 import com.sg.employeeservice.dto.EmployeeDTO
 import com.sg.employeeservice.service.EmployeeService
 import org.assertj.core.api.Assertions.assertThat
@@ -14,9 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.data.domain.PageImpl
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import java.net.URI
 
 
@@ -28,11 +30,13 @@ class RestLayerIntegrationTest(
     @MockBean
     lateinit var employeeService: EmployeeService
 
-    //Note: can not use Before all due to companion objects limitation
     @BeforeEach
     fun `before each`() {
         given(employeeService.findEmployee(ArgumentMatchers.anyString())).willReturn(
                 TestObjectFactory.getRandomEployee())
+
+        given(employeeService.findAllEmployee()).willReturn(
+                PageImpl(TestObjectFactory.getRandomEployees(5)))
     }
 
     @Test
@@ -49,24 +53,26 @@ class RestLayerIntegrationTest(
 
     @Test
     fun `endpoint to save employee should exists which takes one employee object`() {
-        val response = restTemplate.postForEntity(URI("/employee"),
-                TestObjectFactory.getRandomEployee(),
+        val entity = HttpEntity(TestObjectFactory.getRandomEployee())
+        val response = restTemplate.exchange(URI("/employee"), HttpMethod.PUT,
+                entity,
                 String::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
     }
 
 
     @Test
-    fun `employee endpoint should return List of Employee DTO objects`() {
-        val response = restTemplate.getList<List<EmployeeDTO>>("/employee")
-        Assertions.assertTrue(response?.body is List<EmployeeDTO>)
-    }
-
-    @Test
     fun `employee endpoint should return single employee DTO object of given Id`() {
         val response = restTemplate.getForEntity(URI("/employee/fakeid"), EmployeeDTO::class.java)
         assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
         Assertions.assertTrue(response?.body is EmployeeDTO)
+    }
+
+    @Test
+    fun `employee endpoint should return List of Employee DTO objects`() {
+        val response = restTemplate.getForObject("/employee", String::class.java)
+        val firstName = JsonPath.parse(response).read<String>("$.content[0].firstName")
+        assertThat(firstName).isEqualTo("Manish")
     }
 
     @Test
@@ -78,10 +84,17 @@ class RestLayerIntegrationTest(
         assertThat(field).containsAll(listOf("firstName", "lastName", "gender", "dob", "department"))
     }
 
-
-    fun <T> TestRestTemplate.getList(url: String): ResponseEntity<T>? {
-        return exchange(url, HttpMethod.GET, null, object : ParameterizedTypeReference<T>() {})
+    @Test
+    fun `employee list should be pageable`() {
+        val response = restTemplate.exchange(URI("/employee"), HttpMethod.GET,
+                null, object : ParameterizedTypeReference<RestResponsePage<EmployeeDTO?>?>() {})
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body?.pageable?.isPaged).isTrue()
+        assertThat(response.body?.totalElements).isEqualTo(5)
     }
+
+
+
 }
 
 
