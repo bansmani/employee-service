@@ -2,6 +2,7 @@ package com.sg.employeeservice.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sg.employeeservice.TestObjectFactory
+import com.sg.employeeservice.any
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
 import com.sg.employeeservice.service.EmployeeService
@@ -79,7 +80,5 @@ internal class EmployeeControllerTest(
         verify(employeeService, Mockito.times(1)).saveEmployee(any(Employee::class.java))
     }
 
-    //Note: mokito support for kotlin
-    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 
 }

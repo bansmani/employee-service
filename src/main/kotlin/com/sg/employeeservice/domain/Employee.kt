@@ -2,9 +2,11 @@ package com.sg.employeeservice.domain
 
 import com.sg.employeeservice.dto.EmployeeDTO
 import java.time.LocalDate
+import javax.persistence.Entity
+import javax.persistence.Id
 
-
-class Employee(val empId: String,
+@Entity
+class Employee(@Id val empId: String,
                val firstName: String,
                val lastName: String,
                val gender: Gender,

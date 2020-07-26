@@ -1,10 +1,12 @@
 package com.sg.employeeservice
 
+import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.repository.EmployeeRepository
 import com.sg.employeeservice.service.EmployeeService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -37,6 +39,17 @@ class EmployeeServiceTest {
         assertThat(employeeList[0].empId).isEqualTo("EMP001")
     }
 
+
+    @Test
+    fun `saveEmployee should call repository save method`() {
+        given(employeeRepository.findAll())
+                .willReturn(listOf(TestObjectFactory.getRandomEployee("EMP001")))
+
+         employeeService.saveEmployee(TestObjectFactory.getRandomEployee())
+        Mockito.verify(employeeRepository, Mockito.times(1)).save(any(Employee::class.java))
+
+
+    }
 
 
 }
