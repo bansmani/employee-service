@@ -24,7 +24,7 @@ class EmployeeController(
          return employeeService.findEmployee(empId)?.toDTO()
     }
 
-    @PostMapping("/employee")
+    @PutMapping("/employee")
     @ResponseStatus(HttpStatus.CREATED)
     fun saveEmployee(@RequestBody employee: Employee){
         employeeService.saveEmployee(employee)
