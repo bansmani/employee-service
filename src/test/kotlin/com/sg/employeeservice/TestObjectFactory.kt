@@ -3,6 +3,7 @@ package com.sg.employeeservice
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
 import java.time.LocalDate
+import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 
@@ -14,8 +15,14 @@ import kotlin.random.Random
 object TestObjectFactory {
 
     fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt()) =
-        Employee(empId, "Manish", "Bansal", Gender.MALE,
-                LocalDate.of(1990, 1, 1), "IT")
+            Employee(empId, "Manish", "Bansal", Gender.MALE,
+                    LocalDate.of(1990, 1, 1), "IT")
 
-
+    fun getRandomEployees(cnt: Int) : List<Employee> {
+        val random = Random(4)
+        return (1..cnt).map {
+            Employee("EMP" + random.nextInt().absoluteValue, "Manish", "Bansal", Gender.MALE,
+                    LocalDate.of(1990, 1, 1), "IT")
+        }
+    }
 }
