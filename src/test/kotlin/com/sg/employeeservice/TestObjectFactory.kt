@@ -14,7 +14,7 @@ import kotlin.random.Random
  */
 object TestObjectFactory {
 
-    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt()) =
+    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt(), firstName : String = "Maria") =
             Employee(empId, "Maria", "Jane", Gender.FEMALE,
                     LocalDate.of(1990, 1, 1), "IT")
 
