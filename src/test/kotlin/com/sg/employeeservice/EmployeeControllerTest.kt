@@ -1,8 +1,7 @@
-package com.sg.employeeservice.controller
+package com.sg.employeeservice
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.sg.employeeservice.TestObjectFactory
-import com.sg.employeeservice.any
+import com.sg.employeeservice.controller.EmployeeController
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
 import com.sg.employeeservice.service.EmployeeService

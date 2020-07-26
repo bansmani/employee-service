@@ -21,7 +21,7 @@ import java.net.URI
 
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class IntegrationTest(
+class RestLayerIntegrationTest(
         @Autowired private val restTemplate: TestRestTemplate
 ) {
 

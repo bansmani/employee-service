@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "2.3.2.RELEASE"
 	id("io.spring.dependency-management") version "1.0.9.RELEASE"
+	id("org.jetbrains.kotlin.plugin.jpa") version "1.3.72"
 	kotlin("jvm") version "1.3.72"
 	kotlin("plugin.spring") version "1.3.72"
 }
@@ -25,6 +26,7 @@ dependencies {
 
 	implementation("org.springdoc:springdoc-openapi-ui:1.2.32")
 
+	//could make it testRuntimeOnly if switching to some other db
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
