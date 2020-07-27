@@ -1,6 +1,7 @@
 package com.sg.employeeservice.domain
 
 import com.sg.employeeservice.dto.EmployeeDTO
+import org.springframework.data.domain.Persistable
 import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -12,7 +13,8 @@ class Employee(@Id val empId: String,
                val lastName: String,
                val gender: Gender,
                val dob: LocalDate,
-               val department: String) {
+               val department: String,
+               val action: RecordAction = RecordAction.CREATE) : Persistable<String> {
     fun toDTO() = EmployeeDTO(empId, firstName, lastName, gender, dob, department)
 
 
@@ -29,6 +31,14 @@ class Employee(@Id val empId: String,
 
     override fun hashCode(): Int {
         return empId.hashCode()
+    }
+
+    override fun getId(): String? {
+        return empId
+    }
+
+    override fun isNew(): Boolean {
+        return action == RecordAction.CREATE
     }
 
 

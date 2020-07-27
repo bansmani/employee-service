@@ -27,7 +27,14 @@ class RestLayerIntegrationTest(
 
     @BeforeEach
     fun beforeEach(){
-        employeeRepository.deleteAll()
+        employeeRepository.deleteAllInBatch()
+        while(employeeRepository.count()>0){
+            Thread.sleep(10)
+            println("waiting for delete : " + employeeRepository.count())
+            employeeRepository.deleteAllInBatch()
+        }
+
+
     }
 
 

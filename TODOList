@@ -4,4 +4,7 @@ TODO: add case for employee not found, should throw resouce not found exception 
 TODO: productionized code - add logging and hibernate jpa logging
 DONE: productionized code add - Pagination
 TODO: productionized code add - exception handling
-TODO: productionized code add - sorting
+DONE: productionized code add - sorting
+
+DONE : Employee once created by a given empID should not recreate, or update
+     : update employee should be treated separatly

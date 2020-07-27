@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import java.util.*
 
 
@@ -36,7 +37,7 @@ class EmployeeServiceTest {
 
     @Test
     fun `findAllEmployee returns list of employee`() {
-        given(employeeRepository.findAll(PageRequest.of(0, 100)))
+        given(employeeRepository.findAll(PageRequest.of(0, 100, Sort.Direction.ASC, "firstName")))
                 .willReturn(PageImpl(listOf(TestObjectFactory.getRandomEployee("EMP001"))))
 
         val employeeList = employeeService.findAllEmployee()
