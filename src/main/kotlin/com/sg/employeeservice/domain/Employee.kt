@@ -1,5 +1,7 @@
 package com.sg.employeeservice.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.sg.employeeservice.dto.EmployeeDTO
 import org.springframework.data.domain.Persistable
 import java.time.LocalDate
@@ -15,6 +17,7 @@ class Employee(@Id val empId: String,
                val dob: LocalDate,
                val department: String,
                val action: RecordAction = RecordAction.CREATE) : Persistable<String> {
+
     fun toDTO() = EmployeeDTO(empId, firstName, lastName, gender, dob, department)
 
 
@@ -33,10 +36,13 @@ class Employee(@Id val empId: String,
         return empId.hashCode()
     }
 
+    @JsonIgnore
     override fun getId(): String? {
         return empId
+
     }
 
+    @JsonIgnore
     override fun isNew(): Boolean {
         return action == RecordAction.CREATE
     }

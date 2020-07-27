@@ -1,5 +1,8 @@
 package com.sg.employeeservice
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
 import java.time.LocalDate
@@ -15,15 +18,22 @@ import kotlin.random.Random
 object TestObjectFactory {
 
     //TODO: change random method
-    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt(), firstName : String = "Maria") =
+    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt(), firstName: String = "Maria") =
             Employee(empId, firstName, "Jane", Gender.FEMALE,
                     LocalDate.of(1990, 1, 1), "IT")
 
-    fun getRandomEployees(cnt: Int) : List<Employee> {
+    fun getRandomEployees(cnt: Int): List<Employee> {
         val random = Random(4)
         return (1..cnt).map {
             Employee("EMP" + random.nextInt().absoluteValue, "Manish", "Bansal", Gender.MALE,
                     LocalDate.of(1990, 1, 1), "IT")
         }
     }
+}
+
+fun Employee.toJson(): String {
+    val mapper = ObjectMapper()
+    mapper.registerModule(JavaTimeModule())
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    return mapper.writeValueAsString(this)
 }

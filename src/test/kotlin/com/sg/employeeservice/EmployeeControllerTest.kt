@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.sg.employeeservice.controller.EmployeeController
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
+import com.sg.employeeservice.exceptions.ResourceNotFoundException
 import com.sg.employeeservice.service.EmployeeService
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
@@ -79,6 +81,18 @@ internal class EmployeeControllerTest(
                 .content(objectMapper.writeValueAsString(TestObjectFactory.getRandomEployee())))
         verify(employeeService, Mockito.times(1)).saveEmployee(any(Employee::class.java))
     }
+
+
+    @Test
+    fun `user should get meaningfull friendly exception`() {
+        given(employeeService.findEmployee(anyString())).willThrow(
+                ResourceNotFoundException("Could not find Employee with id E001"))
+
+        mockMvc.perform(get("/employee/fakeid"))
+                .andExpect(status().isNotFound)
+                .andExpect(status().reason(Matchers.containsString("Could not find Employee with id E001")))
+    }
+
 
 
 }

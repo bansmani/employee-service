@@ -1,6 +1,7 @@
 package com.sg.employeeservice
 
 import com.jayway.jsonpath.JsonPath
+import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.dto.EmployeeDTO
 import com.sg.employeeservice.repository.EmployeeRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -15,45 +16,45 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import java.net.URI
 
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class RestLayerIntegrationTest(
-        @Autowired private val restTemplate: TestRestTemplate,
+        @Autowired private val testRestTemplate: TestRestTemplate,
         @Autowired private val employeeRepository: EmployeeRepository
 ) {
 
 
     @BeforeEach
-    fun beforeEach(){
+    fun beforeEach() {
         employeeRepository.deleteAllInBatch()
-        while(employeeRepository.count()>0){
+        while (employeeRepository.count() > 0) {
             Thread.sleep(10)
             println("waiting for delete : " + employeeRepository.count())
             employeeRepository.deleteAllInBatch()
         }
-
-
     }
 
 
     @Test
     fun `endpoint to get all employee should exists`() {
-        val response = restTemplate.getForEntity(URI("/employee"), Any::class.java)
+        val response = testRestTemplate.getForEntity(URI("/employee"), Any::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
     fun `endpoint to get one employee should exists`() {
-        val response = restTemplate.getForEntity(URI("/employee/fakeid"), Any::class.java)
+        val empId = saveRandomEmployee()
+        val response = testRestTemplate.getForEntity(URI("/employee/$empId"), Any::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
-    fun `endpoint to save employee should exists which takes one employee object`() {
+    fun `endpoint to save employee should exists which takes one employee object and return created`() {
         val entity = HttpEntity(TestObjectFactory.getRandomEployee())
-        val response = restTemplate.exchange(URI("/employee"), HttpMethod.PUT,
+        val response = testRestTemplate.exchange(URI("/employee"), HttpMethod.PUT,
                 entity,
                 String::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
@@ -63,17 +64,16 @@ class RestLayerIntegrationTest(
     @Test
     fun `employee endpoint should return single employee DTO object of given Id`() {
         val empId = saveRandomEmployee()
-        val response = restTemplate.getForEntity(URI("/employee/$empId"), EmployeeDTO::class.java)
+        val response = testRestTemplate.getForEntity(URI("/employee/$empId"), EmployeeDTO::class.java)
         assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
         Assertions.assertTrue(response?.body is EmployeeDTO)
     }
 
 
-
     @Test
     fun `employee endpoint should return List of Employee DTO objects`() {
         saveRandomEmployee()
-        val response = restTemplate.getForObject("/employee", String::class.java)
+        val response = testRestTemplate.getForObject("/employee", String::class.java)
         val firstName = JsonPath.parse(response).read<String>("$.content[0].firstName")
         assertThat(firstName).isEqualTo("Maria")
     }
@@ -81,7 +81,7 @@ class RestLayerIntegrationTest(
     @Test
     fun `employee DTO object should contain all required field`() {
         val empId = saveRandomEmployee()
-        val response = restTemplate.getForEntity(URI("/employee/$empId"), EmployeeDTO::class.java)
+        val response = testRestTemplate.getForEntity(URI("/employee/$empId"), EmployeeDTO::class.java)
         Assertions.assertTrue(response.body is EmployeeDTO)
         val employeeDTO = response.body
         val field = employeeDTO?.javaClass?.declaredFields?.map { field -> field.name }
@@ -92,20 +92,13 @@ class RestLayerIntegrationTest(
     fun `employee list should be pageable`() {
         TestObjectFactory.getRandomEployees(5).forEach {
             val entity = HttpEntity(it)
-            restTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
+            testRestTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
         }
-        val response = restTemplate.exchange(URI("/employee"), HttpMethod.GET,
+        val response = testRestTemplate.exchange(URI("/employee"), HttpMethod.GET,
                 null, object : ParameterizedTypeReference<RestResponsePage<EmployeeDTO?>?>() {})
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.body?.pageable?.isPaged).isTrue()
         assertThat(response.body?.totalElements).isEqualTo(5)
-    }
-
-    private fun saveRandomEmployee(): String  {
-        val randomEployee = TestObjectFactory.getRandomEployee()
-        val entity = HttpEntity(randomEployee)
-        restTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
-        return randomEployee.empId
     }
 
 
@@ -122,7 +115,7 @@ class RestLayerIntegrationTest(
         employeeRepository.save(emp3)
 
 
-        val response = restTemplate.exchange(URI("/employee"), HttpMethod.GET,
+        val response = testRestTemplate.exchange(URI("/employee"), HttpMethod.GET,
                 null, object : ParameterizedTypeReference<RestResponsePage<EmployeeDTO?>?>() {})
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
@@ -131,6 +124,37 @@ class RestLayerIntegrationTest(
         assertThat(response.body!!.content.map { it!!.firstName }.toString()).isEqualTo("[ABC, MNO, PQR, XYZ]")
 
     }
+
+    @Test
+    fun `should throw exceptoin if employee not found with appropreate infromation`() {
+        val response = testRestTemplate.getForEntity(URI("/employee/fakeid"), String::class.java)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    }
+
+
+    @Test
+    fun `should throw exceptoin when trying to re-register same employee`() {
+        val randomEployee = TestObjectFactory.getRandomEployee()
+        saveEmployee(randomEployee)
+        val response = saveEmployee(randomEployee)
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+
+
+    }
+
+    private fun saveRandomEmployee(): String {
+        val randomEployee = TestObjectFactory.getRandomEployee()
+        saveEmployee(randomEployee)
+        return randomEployee.empId
+
+    }
+
+    private fun saveEmployee(randomEployee: Employee): ResponseEntity<String>? {
+        val entity = HttpEntity(randomEployee)
+        return testRestTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
+    }
+
+
 }
 
 

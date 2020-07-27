@@ -2,12 +2,14 @@ package com.sg.employeeservice.controller
 
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.dto.EmployeeDTO
+import com.sg.employeeservice.exceptions.EmployeeAlreadyExistsException
 import com.sg.employeeservice.service.EmployeeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.lang.RuntimeException
 
 @Suppress("unused")
 @RestController
@@ -15,6 +17,10 @@ class EmployeeController(
         @Autowired val employeeService: EmployeeService
 ) {
 
+    @GetMapping("/health")
+    fun health(): String {
+        return "OK"
+    }
 
     @GetMapping("/employee")
     fun getAllEmployee(@RequestParam(defaultValue = "0") page: Int = 0,
@@ -26,7 +32,6 @@ class EmployeeController(
 
     @GetMapping("/employee/{empid}")
     fun getEmployee(@PathVariable("empid") empId: String): EmployeeDTO? {
-
         return employeeService.findEmployee(empId)?.toDTO()
     }
 

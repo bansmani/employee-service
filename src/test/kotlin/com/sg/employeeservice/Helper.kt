@@ -7,6 +7,10 @@ import org.mockito.Mockito
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 //Note: mokito support for kotlin
@@ -32,7 +36,34 @@ class RestResponsePage<T> : PageImpl<T> {
     constructor(content: List<T>) : super(content)
 
     constructor() : super(ArrayList<T>())
+}
 
 
+fun HttpPut(url: String, employeeJson: String): String {
+    val connection = URL(url).openConnection() as HttpURLConnection
+    connection.setRequestProperty("Content-Type", "application/json; utf-8")
+    connection.setRequestProperty("Accept", "application/json")
+    connection.doOutput = true
+    connection.doInput = true
+    connection.requestMethod = "PUT"
+    connection.getOutputStream().use { it.write(employeeJson.toByteArray()) }
+    var inputStream: InputStream
+    try {
+        inputStream = connection.inputStream
+    } catch (exception: IOException) {
+        inputStream = connection.errorStream
+    }
+    return inputStream.reader().readText()
+}
 
+fun HttpGet(url: String): String {
+    val connection = URL(url).openConnection() as HttpURLConnection
+    connection.requestMethod = "GET"
+    var inputStream: InputStream
+    try {
+        inputStream = connection.inputStream
+    } catch (exception: IOException) {
+        inputStream = connection.errorStream
+    }
+    return inputStream.reader().readText()
 }

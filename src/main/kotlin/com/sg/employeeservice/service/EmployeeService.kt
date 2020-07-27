@@ -1,6 +1,8 @@
 package com.sg.employeeservice.service
 
 import com.sg.employeeservice.domain.Employee
+import com.sg.employeeservice.exceptions.EmployeeAlreadyExistsException
+import com.sg.employeeservice.exceptions.ResourceNotFoundException
 import com.sg.employeeservice.repository.EmployeeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -8,14 +10,18 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import javax.validation.ConstraintViolationException
 
 
 @Service
 class EmployeeService(
-        @Autowired private val employeeRepository: EmployeeRepository
-) {
+        @Autowired private val employeeRepository: EmployeeRepository)
+{
+
     fun findEmployee(employeeId: String): Employee? {
-        return employeeRepository.findById(employeeId).orElse(null)
+        return employeeRepository.findById(employeeId).orElseThrow {
+            ResourceNotFoundException("Could not find employee with id $employeeId")
+        }
     }
 
     fun findAllEmployee(page: Int = 0,
@@ -27,8 +33,11 @@ class EmployeeService(
     }
 
     fun saveEmployee(employee: Employee) {
-        employeeRepository.save(employee)
-//        employeeRepository.
+        try {
+            employeeRepository.save(employee)
+        } catch (e: Exception) {
+            throw EmployeeAlreadyExistsException("Please change employee id and retry")
+        }
     }
 
 

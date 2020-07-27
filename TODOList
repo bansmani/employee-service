@@ -1,9 +1,9 @@
 TODO: add test case for dob should not be future date or should be greater then equal to 18 years
-TODO: add case for employee not found, should throw resouce not found exception instead of null
+DONE: add case for employee not found, should throw resouce not found exception instead of null
 
 TODO: productionized code - add logging and hibernate jpa logging
 DONE: productionized code add - Pagination
-TODO: productionized code add - exception handling
+DONE: productionized code add - exception handling
 DONE: productionized code add - sorting
 
 DONE : Employee once created by a given empID should not recreate, or update
