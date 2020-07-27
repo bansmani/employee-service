@@ -2,14 +2,12 @@ package com.sg.employeeservice.controller
 
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.dto.EmployeeDTO
-import com.sg.employeeservice.exceptions.EmployeeAlreadyExistsException
 import com.sg.employeeservice.service.EmployeeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import java.lang.RuntimeException
 
 @Suppress("unused")
 @RestController

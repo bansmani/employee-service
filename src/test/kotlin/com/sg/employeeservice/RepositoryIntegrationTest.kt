@@ -1,8 +1,10 @@
 package com.sg.employeeservice
 
+import com.sg.employeeservice.domain.RecordAction
 import com.sg.employeeservice.repository.EmployeeRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -63,6 +65,16 @@ class RepositoryIntegrationTest {
         val randomEployee2 = TestObjectFactory.getRandomEployee("EMP123")
         employeeRepository.save(randomEployee1)
         Assertions.assertThrows(DataIntegrityViolationException::class.java, { employeeRepository.save(randomEployee2) })
+    }
+
+    @Test
+    fun `should allow updating if employee`() {
+        val randomEployee1 = TestObjectFactory.getRandomEployee("EMP123", "Manish", RecordAction.CREATE)
+        val randomEployee2 = TestObjectFactory.getRandomEployee("EMP123", "Deepak", RecordAction.UPDATE)
+        employeeRepository.save(randomEployee1)
+        assertThat(employeeRepository.findById("EMP123").get().firstName).isEqualTo("Manish")
+        assertDoesNotThrow({ employeeRepository.save(randomEployee2) })
+        assertThat(employeeRepository.findById("EMP123").get().firstName).isEqualTo("Deepak")
     }
 
 

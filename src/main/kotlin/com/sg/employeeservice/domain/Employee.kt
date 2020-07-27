@@ -1,7 +1,6 @@
 package com.sg.employeeservice.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.sg.employeeservice.dto.EmployeeDTO
 import org.springframework.data.domain.Persistable
 import java.time.LocalDate

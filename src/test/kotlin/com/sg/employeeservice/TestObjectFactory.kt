@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
+import com.sg.employeeservice.domain.RecordAction
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 import kotlin.random.Random
@@ -18,9 +19,10 @@ import kotlin.random.Random
 object TestObjectFactory {
 
     //TODO: change random method
-    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt(), firstName: String = "Maria") =
+    fun getRandomEployee(empId: String = "EMP" + Random(4).nextInt(), firstName: String = "Maria",
+                         action: RecordAction=RecordAction.CREATE) =
             Employee(empId, firstName, "Jane", Gender.FEMALE,
-                    LocalDate.of(1990, 1, 1), "IT")
+                    LocalDate.of(1990, 1, 1), "IT", action)
 
     fun getRandomEployees(cnt: Int): List<Employee> {
         val random = Random(4)
