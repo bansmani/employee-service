@@ -17,10 +17,7 @@ class Employee(@Id val empId: String,
                @field:NotBlank(message = "last name can not be blank")
                val lastName: String,
 
-               @field:NotBlank(message = "last name can not be blank")
                val gender: Gender,
-
-               @field:NotBlank(message = "last name can not be blank")
                val dob: LocalDate,
 
                @field:NotBlank(message = "department can not be blank")

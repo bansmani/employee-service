@@ -64,7 +64,7 @@ class RepositoryIntegrationTest {
         val randomEployee1 = TestObjectFactory.getRandomEployee("EMP123")
         val randomEployee2 = TestObjectFactory.getRandomEployee("EMP123")
         employeeRepository.save(randomEployee1)
-        Assertions.assertThrows(DataIntegrityViolationException::class.java, { employeeRepository.save(randomEployee2) })
+        Assertions.assertThrows(DataIntegrityViolationException::class.java) { employeeRepository.save(randomEployee2) }
     }
 
     @Test
@@ -73,7 +73,7 @@ class RepositoryIntegrationTest {
         val randomEployee2 = TestObjectFactory.getRandomEployee("EMP123", "Deepak", RecordAction.UPDATE)
         employeeRepository.save(randomEployee1)
         assertThat(employeeRepository.findById("EMP123").get().firstName).isEqualTo("Manish")
-        assertDoesNotThrow({ employeeRepository.save(randomEployee2) })
+        assertDoesNotThrow { employeeRepository.save(randomEployee2) }
         assertThat(employeeRepository.findById("EMP123").get().firstName).isEqualTo("Deepak")
     }
 

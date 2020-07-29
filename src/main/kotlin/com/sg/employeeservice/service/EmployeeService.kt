@@ -4,6 +4,7 @@ import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.exceptions.EmployeeAlreadyExistsException
 import com.sg.employeeservice.exceptions.EmployeeNotFoundException
 import com.sg.employeeservice.repository.EmployeeRepository
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
@@ -19,7 +20,7 @@ import java.time.LocalDate
 class EmployeeService(
         @Autowired private val employeeRepository: EmployeeRepository) {
 
-    val logger = LoggerFactory.getLogger(this.javaClass)
+    val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     fun findEmployee(employeeId: String): Employee? {
         return employeeRepository.findById(employeeId).orElseThrow {
@@ -45,7 +46,7 @@ class EmployeeService(
         }
         catch (e: Exception) {
             logger.error("Exception Saving Employee", e)
-            throw e;
+            throw e
         }
     }
 

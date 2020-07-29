@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sg.employeeservice
 
 import com.fasterxml.jackson.databind.ObjectMapper

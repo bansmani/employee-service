@@ -22,6 +22,7 @@ import java.net.URI
 import java.time.LocalDate
 
 
+@Suppress("UsePropertyAccessSyntax", "UsePropertyAccessSyntax")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class RestLayerIntegrationTest(
         @Autowired private val testRestTemplate: TestRestTemplate,

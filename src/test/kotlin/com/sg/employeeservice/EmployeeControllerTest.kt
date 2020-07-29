@@ -6,7 +6,6 @@ import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
 import com.sg.employeeservice.exceptions.EmployeeNotFoundException
 import com.sg.employeeservice.service.EmployeeService
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
