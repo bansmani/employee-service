@@ -1,7 +1,7 @@
-TODO: add test case for dob should not be future date or should be greater then equal to 18 years
+DONE add test case for dob should not be future date or should be greater then equal to 18 years
 DONE: add case for employee not found, should throw resouce not found exception instead of null
 
-TODO: productionized code - add logging and hibernate jpa logging
+DONE: productionized code - add logging and hibernate jpa logging
 DONE: productionized code add - Pagination
 DONE: productionized code add - exception handling
 DONE: productionized code add - sorting
