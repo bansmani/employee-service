@@ -59,6 +59,7 @@ for production add applicable database driver and configuration in spring proper
 #### Features: 
 - Registering new Employee or updating existing employee 
 - List employee uisng pagination 
+- Sorting feature
 - find employee using (limited to emp id)
 - basic validation 
 - exception handling 
