@@ -5,7 +5,9 @@ along with employee listing and basic search using employee ID.
 Application is developed using Kotlin with Spring boot application with pure TDD practice. 
 
 Note: this is only a backend RESTfull API and does not contain UI project 
-  
+
+[![CircleCI](https://circleci.com/gh/bansmani/employee-service.svg?style=svg)](https://github.com/bansmani/employee-service)
+
 
 #### Building and Running application 
 clone repository to your local machine and switch inside project root
