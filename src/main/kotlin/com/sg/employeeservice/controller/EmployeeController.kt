@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @Suppress("unused")
 @RestController
@@ -35,7 +36,7 @@ class EmployeeController(
 
     @PutMapping("/employee")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveEmployee(@RequestBody employee: Employee) {
+    fun saveEmployee(@Valid @RequestBody employee: Employee) {
         employeeService.saveEmployee(employee)
     }
 

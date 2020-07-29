@@ -6,15 +6,26 @@ import org.springframework.data.domain.Persistable
 import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.validation.constraints.NotBlank
 
 @Suppress("MemberVisibilityCanBePrivate")
 @Entity
 class Employee(@Id val empId: String,
+               @field:NotBlank(message = "first name can not be blank")
                val firstName: String,
+
+               @field:NotBlank(message = "last name can not be blank")
                val lastName: String,
+
+               @field:NotBlank(message = "last name can not be blank")
                val gender: Gender,
+
+               @field:NotBlank(message = "last name can not be blank")
                val dob: LocalDate,
+
+               @field:NotBlank(message = "department can not be blank")
                val department: String,
+
                val action: RecordAction = RecordAction.CREATE) : Persistable<String> {
 
     fun toDTO() = EmployeeDTO(empId, firstName, lastName, gender, dob, department)
