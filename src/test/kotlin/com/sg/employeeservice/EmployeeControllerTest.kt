@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.sg.employeeservice.controller.EmployeeController
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.domain.Gender
-import com.sg.employeeservice.exceptions.ResourceNotFoundException
+import com.sg.employeeservice.exceptions.EmployeeNotFoundException
 import com.sg.employeeservice.service.EmployeeService
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -86,11 +86,11 @@ internal class EmployeeControllerTest(
     @Test
     fun `user should get meaningfull friendly exception`() {
         given(employeeService.findEmployee(anyString())).willThrow(
-                ResourceNotFoundException("Could not find Employee with id E001"))
+                EmployeeNotFoundException("Could not find Employee with id E001"))
 
         mockMvc.perform(get("/employee/fakeid"))
                 .andExpect(status().isNotFound)
-                .andExpect(status().reason(Matchers.containsString("Could not find Employee with id E001")))
+                .andExpect(jsonPath("message").value("Could not find Employee with id E001"))
     }
 
 

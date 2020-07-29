@@ -5,6 +5,7 @@ import com.sg.employeeservice.repository.EmployeeRepository
 import com.sg.employeeservice.service.EmployeeService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import java.time.LocalDate
 import java.util.*
 
 
@@ -21,6 +23,7 @@ class EmployeeServiceTest {
 
     @MockBean
     lateinit var employeeRepository: EmployeeRepository
+
     @Autowired
     lateinit var employeeService: EmployeeService
 
@@ -52,5 +55,11 @@ class EmployeeServiceTest {
     }
 
 
+    @Test
+    fun `validate that dob can not be future date`() {
+        val randomEployee = TestObjectFactory.getRandomEployee(dob = LocalDate.now().plusDays(1))
+        assertThrows<IllegalArgumentException>("Date of birth can not future date")
+        { employeeService.saveEmployee(randomEployee) }
+    }
 
 }

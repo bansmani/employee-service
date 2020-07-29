@@ -2,7 +2,7 @@ package com.sg.employeeservice.service
 
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.exceptions.EmployeeAlreadyExistsException
-import com.sg.employeeservice.exceptions.ResourceNotFoundException
+import com.sg.employeeservice.exceptions.EmployeeNotFoundException
 import com.sg.employeeservice.repository.EmployeeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -10,16 +10,17 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
+import java.time.LocalDate
 
 
 @Service
 class EmployeeService(
-        @Autowired private val employeeRepository: EmployeeRepository)
-{
+        @Autowired private val employeeRepository: EmployeeRepository) {
 
     fun findEmployee(employeeId: String): Employee? {
         return employeeRepository.findById(employeeId).orElseThrow {
-            ResourceNotFoundException("Could not find employee with id $employeeId")
+            EmployeeNotFoundException("Could not find Employee with id $employeeId")
         }
     }
 
@@ -32,6 +33,8 @@ class EmployeeService(
     }
 
     fun saveEmployee(employee: Employee) {
+        if (employee.dob.isAfter(LocalDate.now()))
+            throw IllegalArgumentException("Date of birth can not future date")
         try {
             employeeRepository.save(employee)
         } catch (e: Exception) {

@@ -3,6 +3,7 @@ package com.sg.employeeservice
 import com.jayway.jsonpath.JsonPath
 import com.sg.employeeservice.domain.Employee
 import com.sg.employeeservice.dto.EmployeeDTO
+import com.sg.employeeservice.exceptions.CustomErrorResponse
 import com.sg.employeeservice.repository.EmployeeRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -18,6 +19,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import java.net.URI
+import java.time.LocalDate
 
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -127,8 +129,10 @@ class RestLayerIntegrationTest(
 
     @Test
     fun `should throw exceptoin if employee not found with appropreate infromation`() {
-        val response = testRestTemplate.getForEntity(URI("/employee/fakeid"), String::class.java)
+        val response = testRestTemplate.getForEntity(URI("/employee/fakeid"), CustomErrorResponse::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        assertThat(response.body?.message).isEqualTo("Could not find Employee with id fakeid")
+
     }
 
 
@@ -137,9 +141,18 @@ class RestLayerIntegrationTest(
         val randomEployee = TestObjectFactory.getRandomEployee()
         saveEmployee(randomEployee)
         val response = saveEmployee(randomEployee)
-        assertThat(response?.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    }
 
 
+    @Test
+    fun `validate date of birth can not be future date`(){
+        val randomEployee = TestObjectFactory.getRandomEployee(dob = LocalDate.now().plusDays(1))
+        val response  = saveEmployee(randomEployee, CustomErrorResponse::class.java)
+        println(response)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response.body?.message).isEqualTo("Date of birth can not future date")
     }
 
     private fun saveRandomEmployee(): String {
@@ -149,9 +162,14 @@ class RestLayerIntegrationTest(
 
     }
 
-    private fun saveEmployee(randomEployee: Employee): ResponseEntity<String>? {
+    private fun saveEmployee(randomEployee: Employee): ResponseEntity<String> {
         val entity = HttpEntity(randomEployee)
         return testRestTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, String::class.java)
+    }
+
+    private fun <T> saveEmployee(randomEployee: Employee, classz: Class<T>): ResponseEntity<T> {
+        val entity = HttpEntity(randomEployee)
+        return testRestTemplate.exchange(URI("/employee"), HttpMethod.PUT, entity, classz)
     }
 
 
